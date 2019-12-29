@@ -20,8 +20,7 @@ class Window(QDialog):
         self.w = gl.GLViewWidget()
         # self.w.opts['distance'] = 100
 
-        # grid_shift = 100
-        grid_shift = 40
+        grid_shift = 100
         grid_spacing = 4
 
         gx = gl.GLGridItem()
@@ -42,62 +41,25 @@ class Window(QDialog):
         # gz.translate(0, 0, -grid_shift/2)
         self.w.addItem(gz)
 
-
         self.main_scatter_plot = gl.GLScatterPlotItem()
         self.color = (1, 0.7, 0.4, 1)
-
 
         x = np.load('X.npy')
         x = x * 10
         print(x.shape)
         # ind = np.random.choice(x.shape[0], size=40_000, replace=False)
         # x = x[ind]
-
         self.main_scatter_plot.setData(pos=x, size=0.01, color=self.color, pxMode=False)
-
         self.w.addItem(self.main_scatter_plot)
-
-        # self.a = np.random.randint(0, 100, (400, 200))
-        # self.glayout = pg.GraphicsLayoutWidget()
-
-        # self.pplot = self.glayout.addPlot()
-
-        # self.pplot.setYRange(0, 500)
-        # self.pplot.setXRange(0, 500)
-
-        # self.pplot.setAspectLocked()
-        # self.pplot.setMouseEnabled(x=False, y=False)
-        # self.pplot.setMenuEnabled(False)
-        # self.pplot.setLogMode(y=True, x=False)
-
-        # self.pplot.setXRange(0, 200, padding=0)
-        # self.pplot.setYRange(0, 400, padding=0)
-
-        # self.pplot.invertY(True)
-        # self.img.setRect(pg.QtCore.QRectF(0, 0, self.a.shape[0] - 1, self.a.shape[1] - 1))
-        # self.img.setRect(pg.QtCore.QRectF(0, config.min_hz, self.a.shape[0] - 1, config.max_hz))
-        # self.pplot.addItem(self.img)
-        # print(self.pplot.viewGeometry())
-        # self.plot()
-
-        # self.pcurve = self.pplot.plot()
-
-        # set the layout
         layout = QVBoxLayout()
-        # layout.addWidget(self.plot)
-        # layout.addWidget(self.glayout)
         layout.addWidget(self.w)
-
         self.setLayout(layout)
-
-
         self.setGeometry(0, 0, 1200, 800)
 
 
 
 
 app = QtGui.QApplication(sys.argv)
-# QtGui.QApplication.instance().exec()
 gui = Window()
 gui.show()
 app.exec()
