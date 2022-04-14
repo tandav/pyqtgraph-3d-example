@@ -43,14 +43,26 @@ class Window(QDialog):
         self.main_scatter_plot = gl.GLScatterPlotItem()
         self.color = (1, 0.7, 0.4, 1)
 
-        x = np.load('X.npy')
+        x = pd.read_csv('X.csv', index_col=0)
+        # x = np.load('X.npy')
         # x = np.random.random((1000, 3))
-        x = x * 10
-        print(x.shape)
+        # x = x * 10
+        # print(x.shape)
+
         # ind = np.random.choice(x.shape[0], size=40_000, replace=False)
         # x = x[ind]
-        self.main_scatter_plot.setData(pos=x, size=0.01, color=self.color, pxMode=False)
+        self.main_scatter_plot.setData(pos=x.values, size=0.2, color=self.color, pxMode=False)
         self.w.addItem(self.main_scatter_plot)
+
+        # txtitem2 = gl.GLTextItem()
+        # txtitem2.setData(pos=(1.0, -1.0, 2.0), color=(127, 255, 127, 255), text='text2')
+        # self.w.addItem(txtitem2)
+
+        for row in x.itertuples():
+            t = gl.GLTextItem()
+            t.setData(pos=(row.x, row.y, row.z), color=(127, 255, 127, 255), text=row.Index)
+            self.w.addItem(t)
+
         layout = QVBoxLayout()
         layout.addWidget(self.w)
         self.setLayout(layout)
