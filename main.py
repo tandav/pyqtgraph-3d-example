@@ -1,19 +1,18 @@
 import numpy as np
 import pandas as pd
 import pyqtgraph.opengl as gl
-from PyQt5.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
+from PyQt6.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
 from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph as pg
 import sys
-
 
 
 class Window(QDialog):
     def __init__(self, parent=None):
         super().__init__()
 
-        pg.setConfigOption('background', 'w')
-        pg.setConfigOption('foreground', 'k')
+        # pg.setConfigOption('background', 'w')
+        # pg.setConfigOption('foreground', 'k')
         
         self.setWindowTitle('Earth Cities')
 
@@ -45,6 +44,7 @@ class Window(QDialog):
         self.color = (1, 0.7, 0.4, 1)
 
         x = np.load('X.npy')
+        # x = np.random.random((1000, 3))
         x = x * 10
         print(x.shape)
         # ind = np.random.choice(x.shape[0], size=40_000, replace=False)
@@ -55,8 +55,6 @@ class Window(QDialog):
         layout.addWidget(self.w)
         self.setLayout(layout)
         self.setGeometry(0, 0, 1200, 800)
-
-
 
 
 app = QtGui.QApplication(sys.argv)
