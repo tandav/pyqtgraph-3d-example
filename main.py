@@ -23,7 +23,7 @@ from pathlib import Path
 ]
 '''
 
-with open('graph2.pkl', 'rb') as f:
+with open('graph.pkl', 'rb') as f:
     graph = pickle.load(f)
 
 
@@ -36,8 +36,8 @@ class Window(QDialog):
         
         self.setWindowTitle('Earth Cities')
 
-        # self.data_file = Path('X.csv')
-        self.data_file = Path('tiers.json')
+        self.data_file = Path('X.csv')
+        # self.data_file = Path('tiers.json')
         self.data_file_mtime = None
 
 
@@ -92,29 +92,29 @@ class Window(QDialog):
         self.data_file_mtime = mtime
         print('update')
 
-        # X = pd.read_csv(self.data_file, index_col=0)
+        X = pd.read_csv(self.data_file, index_col=0)
 
-        with open(self.data_file) as f:
-            tiers = json.load(f)
+        # with open(self.data_file) as f:
+        #     tiers = json.load(f)
 
-        data, index = [], []
-
-        for tier in tiers:
-            points_names = tier['points']
-            index += points_names
-            n = len(points_names)
-
-            points = []
-            for i in range(n):
-                points.append(tier['radius'] * np.exp(2j * np.pi * i / n))
-            points = np.array(points)
-            # rot = 2 * np.pi / tier['rotation'] if tier['rotation'] else 0
-            rot = 2 * np.pi * tier['rotation']
-            points = points * np.exp(1j * rot)
-
-            data += zip(points.real, points.imag, itertools.repeat(tier['z']))
-
-        X = pd.DataFrame(data, index, columns=list('xyz'))
+        # data, index = [], []
+        #
+        # for tier in tiers:
+        #     points_names = tier['points']
+        #     index += points_names
+        #     n = len(points_names)
+        #
+        #     points = []
+        #     for i in range(n):
+        #         points.append(tier['radius'] * np.exp(2j * np.pi * i / n))
+        #     points = np.array(points)
+        #     # rot = 2 * np.pi / tier['rotation'] if tier['rotation'] else 0
+        #     rot = 2 * np.pi * tier['rotation']
+        #     points = points * np.exp(1j * rot)
+        #
+        #     data += zip(points.real, points.imag, itertools.repeat(tier['z']))
+        #
+        # X = pd.DataFrame(data, index, columns=list('xyz'))
 
         # self.w.opts['viewport'] = (0, 0, 200, 300)
         # self.w.opts['distance'] = 150
