@@ -10,8 +10,16 @@ import json
 import itertools
 from pathlib import Path
 
+'''
+[
+    {"points": ["C", "D", "E", "F", "G", "A", "B"], "radius": 7, "rotation": 0, "z": 0},
+    {"points": ["CD", "CB", "DE", "EF", "FG", "GA", "AB"], "radius": 6, "rotation": 0.7, "z": 3},
+    {"points": ["CE", "CA", "DF", "DB", "EG", "FA", "GB"], "radius": 4, "rotation": 0.2, "z": 6},
+    {"points": ["CF", "CG", "DG", "DA", "EA", "EB", "FB"], "radius": 2, "rotation": 7, "z": 9}
+]
+'''
 
-with open('graph.pkl', 'rb') as f:
+with open('graph2.pkl', 'rb') as f:
     graph = pickle.load(f)
 
 
@@ -96,7 +104,9 @@ class Window(QDialog):
             for i in range(n):
                 points.append(tier['radius'] * np.exp(2j * np.pi * i / n))
             points = np.array(points)
-            points = points * np.exp(2j * tier['rotation'])
+            # rot = 2 * np.pi / tier['rotation'] if tier['rotation'] else 0
+            rot = 2 * np.pi * tier['rotation']
+            points = points * np.exp(1j * rot)
 
             data += zip(points.real, points.imag, itertools.repeat(tier['z']))
 

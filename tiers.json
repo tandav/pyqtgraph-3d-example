@@ -1,6 +1,11 @@
 [
-    {"points": ["C", "D", "E", "F", "G", "A", "B"], "radius": 5, "rotation": 0, "z": 0},
-    {"points": ["CD", "CB", "DE", "EF", "FG", "GA", "AB"], "radius": 3, "rotation": 0, "z": 1},
-    {"points": ["CE", "CA", "DF", "DB", "EG", "FA", "GB"], "radius": 4, "rotation": 0.8975979010256552, "z": 2},
-    {"points": ["CF", "CG", "DG", "DA", "EA", "EB", "FB"], "radius": 2, "rotation": 0.8975979010256552, "z": 3}
+    {"points": ["C", "D", "E", "F", "G", "A", "B"], "radius": 20, "rotation": 0, "z": 0},
+    {"points": ["CB", "CD", "DE", "EF", "FG", "GA", "AB"], "radius": 17, "rotation": 0.9285714285714286, "z": 3},
+    {"points": ["CDB", "CDE", "DEF", "EFG", "FGA", "GAB", "CAB"], "radius": 16, "rotation": 0, "z": 15},
+    {"points": ["CDA", "CEF", "CGB", "DEB", "DFG", "EGA", "FAB"], "radius": 5, "rotation": 0.14, "z": 18},
+    {"points": ["CE", "CA", "DF", "DB", "EG", "FA", "GB"], "radius": 15, "rotation": 0.2, "z": 6},
+    {"points": ["CF", "CG", "DG", "DA", "EA", "EB", "FB"], "radius": 12, "rotation": 7, "z": 9},
+    {"points": ["CEG", "CEA", "CFA", "DFA", "DFB", "DGB", "EGB"], "radius": 10, "rotation": 0, "z": 12},
+    {"points": ["CDF", "CEB", "CGA", "DEG", "DAB", "EFA", "FGB"], "radius": 4, "rotation": 0, "z": 21},
+    {"points": ["CDG", "CFG", "CFB", "DEA", "DGA", "EFB", "EAB"], "radius": 2, "rotation": 0, "z": 24}
 ]
