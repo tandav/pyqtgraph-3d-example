@@ -1,0 +1,6 @@
+[
+    {"points": ["C", "D", "E", "F", "G", "A", "B"], "radius": 5, "rotation": 0, "z": 0},
+    {"points": ["CD", "CB", "DE", "EF", "FG", "GA", "AB"], "radius": 3, "rotation": 0, "z": 1},
+    {"points": ["CE", "CA", "DF", "DB", "EG", "FA", "GB"], "radius": 4, "rotation": 0.8975979010256552, "z": 2},
+    {"points": ["CF", "CG", "DG", "DA", "EA", "EB", "FB"], "radius": 2, "rotation": 0.8975979010256552, "z": 3}
+]

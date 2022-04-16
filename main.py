@@ -7,6 +7,7 @@ import pyqtgraph as pg
 import sys
 import pickle
 import json
+import itertools
 from pathlib import Path
 
 
@@ -23,19 +24,12 @@ class Window(QDialog):
         
         self.setWindowTitle('Earth Cities')
 
-        self.data_file = Path('X.csv')
+        # self.data_file = Path('X.csv')
+        self.data_file = Path('tiers.json')
         self.data_file_mtime = None
 
-        # self.text_items = []
-        # self.line_items = []
 
-        # for row in X.itertuples():
-        #     t = gl.GLTextItem()
-        #     self.text_items.append(t)
-        #     self.w.addItem(t)
-        #
         self.w = gl.GLViewWidget()
-
 
         # self.sp = QSlider()
 
@@ -54,27 +48,12 @@ class Window(QDialog):
 
         self.setLayout(self.layout)
         self.setGeometry(0, 0, 1920, 1080)
-
+        self.update()
         self.timer = pg.QtCore.QTimer()
         self.timer.timeout.connect(self.update)
         self.timer.start(1000)
 
-    def update(self) -> None:
-        mtime = self.data_file.stat().st_mtime
-        if mtime == self.data_file_mtime:
-            print('no update, return')
-            return
-        self.data_file_mtime = mtime
-        print('update')
-
-        X = pd.read_csv(self.data_file, index_col=0)
-
-        # self.w.opts['viewport'] = (0, 0, 200, 300)
-        # self.w.opts['distance'] = 150
-        self.w.clear()
-        grid_shift = 50
-        grid_spacing = 1
-
+    def make_axes_grids(self, grid_shift = 50, grid_spacing = 1):
         gx = gl.GLGridItem(color=(255, 255, 255, 0.1))
         gx.setSize(grid_shift, grid_shift, grid_shift)
         gx.rotate(90, 0, 1, 0)
@@ -92,6 +71,41 @@ class Window(QDialog):
         gz.setSpacing(grid_spacing, grid_spacing, grid_spacing)
         # gz.translate(0, 0, -grid_shift/2)
         self.w.addItem(gz)
+
+    def update(self) -> None:
+        mtime = self.data_file.stat().st_mtime
+        if mtime == self.data_file_mtime:
+            print('no update, return')
+            return
+        self.data_file_mtime = mtime
+        print('update')
+
+        # X = pd.read_csv(self.data_file, index_col=0)
+
+        with open(self.data_file) as f:
+            tiers = json.load(f)
+
+        data, index = [], []
+
+        for tier in tiers:
+            points_names = tier['points']
+            index += points_names
+            n = len(points_names)
+
+            points = []
+            for i in range(n):
+                points.append(tier['radius'] * np.exp(2j * np.pi * i / n))
+            points = np.array(points)
+            points = points * np.exp(2j * tier['rotation'])
+
+            data += zip(points.real, points.imag, itertools.repeat(tier['z']))
+
+        X = pd.DataFrame(data, index, columns=list('xyz'))
+
+        # self.w.opts['viewport'] = (0, 0, 200, 300)
+        # self.w.opts['distance'] = 150
+        self.w.clear()
+        self.make_axes_grids()
 
         self.main_scatter_plot = gl.GLScatterPlotItem()
         self.color = (1, 0.7, 0.4, 1)
