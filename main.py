@@ -1,3 +1,7 @@
+"""
+TODO: rewrite some strings eg CA,B, CAB, here CAB should be renamed to CBA
+"""
+
 import numpy as np
 import pandas as pd
 import pyqtgraph.opengl as gl
