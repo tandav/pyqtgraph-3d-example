@@ -27,7 +27,7 @@ class Window(QDialog):
         grid_shift = 100
         grid_spacing = 4
 
-        gx = gl.GLGridItem()
+        gx = gl.GLGridItem(color=(255, 255, 255, 0.1))
         gx.setSize(grid_shift, grid_shift, grid_shift)
         gx.rotate(90, 0, 1, 0)
         gx.translate(-grid_shift/2, 0, grid_shift/2)
@@ -49,7 +49,7 @@ class Window(QDialog):
         self.color = (1, 0.7, 0.4, 1)
 
         X = pd.read_csv('X.csv', index_col=0)
-        tup = tuple(X.index)
+        # tup = tuple(X.index)
         # X = np.load('X.npy')
         # X = np.random.random((1000, 3))
         # X = X * 10
@@ -57,7 +57,7 @@ class Window(QDialog):
 
         # ind = np.random.choice(X.shape[0], size=40_000, replace=False)
         # X = X[ind]
-        self.main_scatter_plot.setData(pos=X.values, size=0.2, color=self.color, pxMode=False)
+        self.main_scatter_plot.setData(pos=X.values, size=0.05, color=self.color, pxMode=False)
         self.w.addItem(self.main_scatter_plot)
 
         # txtitem2 = gl.GLTextItem()
@@ -73,7 +73,7 @@ class Window(QDialog):
         for k, v in graph.items():
             for vv in v:
                 pts = np.linspace(X.loc[k].values, X.loc[vv].values)
-                p = gl.GLLinePlotItem(pos=pts, color=(1, 1, 1, 0.3), width=1., antialias=True)
+                p = gl.GLLinePlotItem(pos=pts, color=(1, 1, 1, 0.3), width=2., antialias=True)
                 self.w.addItem(p)
 
             # i = tup.index(k)
@@ -92,7 +92,7 @@ class Window(QDialog):
         layout = QVBoxLayout()
         layout.addWidget(self.w)
         self.setLayout(layout)
-        self.setGeometry(0, 0, 1200, 800)
+        self.setGeometry(0, 0, 1920, 1080)
 
 
 app = QtGui.QApplication(sys.argv)
