@@ -1,18 +1,18 @@
 import numpy as np
 import pandas as pd
 import pyqtgraph.opengl as gl
-from PyQt6.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
+from PyQt6.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout, QHBoxLayout, QSlider
 from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph as pg
 import sys
 import pickle
+import json
+from pathlib import Path
 
 
 with open('graph.pkl', 'rb') as f:
     graph = pickle.load(f)
 
-X = pd.read_csv('X.csv', index_col=0)
-# X.columns = list('yzx')
 
 class Window(QDialog):
     def __init__(self, parent=None):
@@ -23,9 +23,55 @@ class Window(QDialog):
         
         self.setWindowTitle('Earth Cities')
 
-        self.w = gl.GLViewWidget()
-        # self.w.opts['distance'] = 150
+        self.data_file = Path('X.csv')
+        self.data_file_mtime = None
 
+        # self.text_items = []
+        # self.line_items = []
+
+        # for row in X.itertuples():
+        #     t = gl.GLTextItem()
+        #     self.text_items.append(t)
+        #     self.w.addItem(t)
+        #
+        self.w = gl.GLViewWidget()
+
+
+        # self.sp = QSlider()
+
+        self.layout = QHBoxLayout()
+        # self.right_layout = QVBoxLayout()
+        # self.left_layout = QVBoxLayout()
+        #
+        # self.left_layout.addWidget(self.w)
+        # self.right_layout.addWidget(self.sp)
+        #
+        # self.layout.addLayout(self.left_layout)
+        # self.layout.addLayout(self.right_layout)
+
+        # layout = QVBoxLayout()
+        self.layout.addWidget(self.w)
+
+        self.setLayout(self.layout)
+        self.setGeometry(0, 0, 1920, 1080)
+
+        self.timer = pg.QtCore.QTimer()
+        self.timer.timeout.connect(self.update)
+        self.timer.start(1000)
+
+    def update(self) -> None:
+        mtime = self.data_file.stat().st_mtime
+        if mtime == self.data_file_mtime:
+            print('no update, return')
+            return
+        self.data_file_mtime = mtime
+        print('update')
+
+        X = pd.read_csv(self.data_file, index_col=0)
+
+        # self.w.opts['viewport'] = (0, 0, 200, 300)
+        # self.w.opts['distance'] = 150
+        self.w.clear()
         grid_shift = 50
         grid_spacing = 1
 
@@ -49,9 +95,10 @@ class Window(QDialog):
 
         self.main_scatter_plot = gl.GLScatterPlotItem()
         self.color = (1, 0.7, 0.4, 1)
+        self.w.addItem(self.main_scatter_plot)
+
 
         self.main_scatter_plot.setData(pos=X.values, size=0.05, color=self.color, pxMode=False)
-        self.w.addItem(self.main_scatter_plot)
 
         for row in X.itertuples():
             t = gl.GLTextItem()
@@ -64,10 +111,9 @@ class Window(QDialog):
                 p = gl.GLLinePlotItem(pos=pts, color=(1, 1, 1, 0.3), width=2., antialias=True)
                 self.w.addItem(p)
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.w)
-        self.setLayout(layout)
-        self.setGeometry(0, 0, 1920, 1080)
+        # for k, v in graph.items():
+        # for vv in v:
+
 
 
 app = QtGui.QApplication(sys.argv)
