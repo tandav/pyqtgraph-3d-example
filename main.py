@@ -65,7 +65,8 @@ class Window(QDialog):
         self.setWindowTitle('Earth Cities')
 
         # self.data_file = Path('X.csv')
-        self.data_file = Path('X3.csv')
+        # self.data_file = Path('X3.csv')
+        self.data_file = Path('N.csv')
         self.X = pd.read_csv(self.data_file, index_col=0)
         self.tiers = self.X['tier'].unique().tolist()
         # self.data_file = Path('tiers.json')
