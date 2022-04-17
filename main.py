@@ -36,7 +36,8 @@ class Window(QDialog):
         
         self.setWindowTitle('Earth Cities')
 
-        self.data_file = Path('X.csv')
+        # self.data_file = Path('X.csv')
+        self.data_file = Path('X3.csv')
         # self.data_file = Path('tiers.json')
         self.data_file_mtime = None
 
@@ -126,7 +127,7 @@ class Window(QDialog):
         self.w.addItem(self.main_scatter_plot)
 
 
-        self.main_scatter_plot.setData(pos=X.values, size=0.05, color=self.color, pxMode=False)
+        self.main_scatter_plot.setData(pos=X[list('xyz')].values, size=0.05, color=self.color, pxMode=False)
 
         for row in X.itertuples():
             t = gl.GLTextItem()
@@ -135,7 +136,7 @@ class Window(QDialog):
 
         for k, v in graph.items():
             for vv in v:
-                pts = np.linspace(X.loc[k].values, X.loc[vv].values)
+                pts = np.linspace(X.loc[k, list('xyz')].values, X.loc[vv, list('xyz')].values)
                 p = gl.GLLinePlotItem(pos=pts, color=(1, 1, 1, 0.3), width=2., antialias=True)
                 self.w.addItem(p)
 
