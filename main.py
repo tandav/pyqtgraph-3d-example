@@ -37,14 +37,14 @@ def update_tier(
     R: pd.DataFrame,  # in polar form
     tier: int,
     radius: float | None = None,
-    angle_offset: float | None = None,
+    angle: float | None = None,
     z: float | None = None,
 ):
     R = R.copy()
     if radius is not None:
         R.loc[R.tier == tier, 'radius'] = radius
-    if angle_offset is not None:
-        R.loc[R.tier == tier, 'angle'] = R.loc[R.tier == tier, 'angle'] + angle_offset
+    if angle is not None:
+        R.loc[R.tier == tier, 'angle'] = R.loc[R.tier == tier, 'angle'] + angle
     if z is not None:
         R.loc[R.tier == tier, 'z'] = z
     C = R['radius'] * (np.cos(R['angle']) + 1j * np.sin(R['angle']))
@@ -58,6 +58,7 @@ class Window(QDialog):
     def __init__(self, parent=None):
         super().__init__()
 
+        pg.setConfigOption('background', (12, 0, 53))
         # pg.setConfigOption('background', 'w')
         # pg.setConfigOption('foreground', 'k')
         
@@ -262,7 +263,7 @@ class Window(QDialog):
         # self.w.opts['viewport'] = (0, 0, 200, 300)
         # self.w.opts['distance'] = 150
         self.w.clear()
-        # self.make_axes_grids()
+        self.make_axes_grids()
 
         self.main_scatter_plot = gl.GLScatterPlotItem()
         self.color = (1, 0.7, 0.4, 1)
