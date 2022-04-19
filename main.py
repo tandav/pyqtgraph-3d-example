@@ -1,7 +1,8 @@
 """
 TODO: rewrite some strings eg CA,B, CAB, here CAB should be renamed to CBA
 """
-
+import random
+import time
 import numpy as np
 import pandas as pd
 import pyqtgraph.opengl as gl
@@ -13,9 +14,43 @@ import pyqtgraph as pg
 import sys
 import pickle
 import json
+import asyncio
 import itertools
 from functools import partial
 from pathlib import Path
+from musictool.chord import SpecificChord
+from musictool.noteset import NoteSet
+from musictool.scale import Scale
+from musictool.note import SpecificNote
+from musictool.midi import player
+import mido
+import util
+
+
+
+
+
+
+
+
+
+
+scale = Scale.from_name('C', 'major')
+GREEN_COLOR = 127, 255, 127, 255
+RED_COLOR = 255, 0, 0, 255
+BPM = 120
+
+midi = mido.MidiFile('/Users/tandav/Desktop/harmony.mid', type=1)
+track = util.parse_notes_seconds(midi, bpm=120)
+# miditrack = [
+#     MidiNote(
+#         note.note,
+#         mido.tick2second(note.on, midi.ticks_per_beat, BPM),
+#         mido.tick2second(note.off, midi.ticks_per_beat, BPM),
+#         note.track,
+#     )
+#     for note in parse_notes(midi)
+# ]
 
 '''
 [
@@ -73,6 +108,8 @@ class Window(QDialog):
         # self.data_file = Path('tiers.json')
         self.data_file_mtime = None
         self.n_range = 1000
+        self.chord_to_text = {}
+        self.playing_notes = {}
 
         self.w = gl.GLViewWidget()
 
@@ -90,9 +127,17 @@ class Window(QDialog):
             'angle': (-np.pi, + np.pi),
         }
 
+        self.play_button = QPushButton('play')
+        # self.play_button.clicked.connect(self.play)
+        # self.t_start = time.monotonic()
+        self.message = track[0]
+
+
         self.layout = QHBoxLayout()
         self.left_layout = QVBoxLayout()
         self.right_layout = QVBoxLayout()
+
+        self.right_layout.addWidget(self.play_button)
 
         self.left_layout.addWidget(self.w)
         # self.right_layout.addWidget(self.sp)
@@ -110,6 +155,45 @@ class Window(QDialog):
         self.timer = pg.QtCore.QTimer()
         self.timer.timeout.connect(self.update)
         self.timer.start(1000)
+
+        self.player_timer = pg.QtCore.QTimer()
+        self.player_timer.timeout.connect(self.play)
+        self.player_timer.start(10)
+        # self.play()
+
+
+    def play_new_chord(self):
+        duration = 2 * random.random()
+        chord = SpecificChord(frozenset(SpecificNote(note, octave=1) for note in random.sample(scale.notes_ascending, random.randint(2, 3))))
+        print('playing', chord)
+        t = time.monotonic()
+        for note in chord:
+            player.send_message('note_on', note=note.absolute_i, channel=0)
+            self.playing_notes[note] = {'t_start': t, 'duration': duration, 'chord': chord}
+        self.chord_to_text[chord.abstract].setData(color=RED_COLOR)
+
+    def play(self):
+        if len(self.playing_notes) < 3 and random.random() > 0.5:
+            self.play_new_chord()
+
+        t = time.monotonic()
+        notes_off = set()
+        chords_off = set()
+        for note, payload in self.playing_notes.items():
+            if payload['t_start'] + payload['duration'] < t:
+                player.send_message('note_off', note=note.absolute_i, channel=0)
+                notes_off.add(note)
+                chords_off.add(payload['chord'])
+
+        for note in notes_off:
+            del self.playing_notes[note]
+
+        for chord in chords_off:
+            self.chord_to_text[chord.abstract].setData(color=GREEN_COLOR)
+
+        # await asyncio.sleep(seconds)
+        # asyncio.run(chord.play(seconds=1))
+
 
     def make_axes_grids(self, grid_shift = 50, grid_spacing = 1):
         gx = gl.GLGridItem(color=(255, 255, 255, 0.1))
@@ -276,7 +360,8 @@ class Window(QDialog):
 
         for row in self.X.itertuples():
             t = gl.GLTextItem(font=QFont('Helvetica', 18))
-            t.setData(pos=(row.x, row.y, row.z), color=(127, 255, 127, 255), text=row.Index)
+            t.setData(pos=(row.x, row.y, row.z), color=GREEN_COLOR, text=row.Index)
+            self.chord_to_text[NoteSet.from_str(row.Index)] = t
             self.w.addItem(t)
 
         for k, v in graph.items():
