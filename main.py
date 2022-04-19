@@ -6,7 +6,7 @@ import time
 import numpy as np
 import pandas as pd
 import pyqtgraph.opengl as gl
-from  PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout, QHBoxLayout, QSlider, QLabel
 from pyqtgraph.Qt import QtCore, QtGui
 from PyQt6.QtGui import QFont
@@ -25,13 +25,18 @@ from musictool.note import SpecificNote
 from musictool.midi import player
 import mido
 import util
+import os
+import enum
+
+class State(enum.Enum):
+    READY = 0
+    WAITING = 1
+    DONE = 2
 
 
 
-
-
-
-
+if midi_device := os.environ.get('MIDI_DEVICE'):
+    port = mido.open_output(midi_device)
 
 
 
@@ -41,7 +46,8 @@ RED_COLOR = 255, 0, 0, 255
 BPM = 120
 
 midi = mido.MidiFile('/Users/tandav/Desktop/harmony.mid', type=1)
-track = util.parse_notes_seconds(midi, bpm=120)
+# track = util.parse_notes_seconds(midi, bpm=120)
+track = midi.tracks[0]
 # miditrack = [
 #     MidiNote(
 #         note.note,
@@ -130,7 +136,10 @@ class Window(QDialog):
         self.play_button = QPushButton('play')
         # self.play_button.clicked.connect(self.play)
         # self.t_start = time.monotonic()
-        self.message = track[0]
+        self.message_i = 0
+        self.t = time.monotonic()
+        self.t_sleep = 0
+        self.state = State.READY
 
 
         self.layout = QHBoxLayout()
@@ -158,7 +167,7 @@ class Window(QDialog):
 
         self.player_timer = pg.QtCore.QTimer()
         self.player_timer.timeout.connect(self.play)
-        self.player_timer.start(10)
+        self.player_timer.start(0)
         # self.play()
 
 
@@ -173,26 +182,51 @@ class Window(QDialog):
         self.chord_to_text[chord.abstract].setData(color=RED_COLOR)
 
     def play(self):
-        if len(self.playing_notes) < 3 and random.random() > 0.5:
-            self.play_new_chord()
+        message = track[self.message_i]
+        if self.state == State.READY:
+            # m = mido.Message(type=message.type, )
+            # port.send(m)
+            if message.type in {'note_on', 'note_off'}:
+                print(message)
+                port.send(message)
+            self.t = time.monotonic()
+            self.t_sleep = mido.tick2second(message.time, midi.ticks_per_beat, mido.bpm2tempo(BPM))
+            self.state = State.WAITING
+        elif self.state == State.WAITING:
+            if time.monotonic() < self.t + self.t_sleep:
+                return
+            if self.message_i + 1 == len(track):
+                self.state = State.DONE
+                return
+            self.message_i += 1
+            self.state = State.READY
+            self.play()
+        elif self.state == State.DONE:
+            return
+        else:
+            raise ValueError
 
-        t = time.monotonic()
-        notes_off = set()
-        chords_off = set()
-        for note, payload in self.playing_notes.items():
-            if payload['t_start'] + payload['duration'] < t:
-                player.send_message('note_off', note=note.absolute_i, channel=0)
-                notes_off.add(note)
-                chords_off.add(payload['chord'])
 
-        for note in notes_off:
-            del self.playing_notes[note]
 
-        for chord in chords_off:
-            self.chord_to_text[chord.abstract].setData(color=GREEN_COLOR)
+        # if len(self.playing_notes) < 3 and random.random() > 0.5:
+        #     self.play_new_chord()
+        #
+        # t = time.monotonic()
+        # notes_off = set()
+        # chords_off = set()
+        # for note, payload in self.playing_notes.items():
+        #     if payload['t_start'] + payload['duration'] < t:
+        #         player.send_message('note_off', note=note.absolute_i, channel=0)
+        #         notes_off.add(note)
+        #         chords_off.add(payload['chord'])
+        #
+        # for note in notes_off:
+        #     del self.playing_notes[note]
+        #
+        # for chord in chords_off:
+        #     self.chord_to_text[chord.abstract].setData(color=GREEN_COLOR)
 
-        # await asyncio.sleep(seconds)
-        # asyncio.run(chord.play(seconds=1))
+
 
 
     def make_axes_grids(self, grid_shift = 50, grid_spacing = 1):
