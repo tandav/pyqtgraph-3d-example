@@ -138,8 +138,8 @@ class Window(QDialog):
         # self.t_start = time.monotonic()
         self.message_i = 0
         self.t = time.monotonic()
-        self.t_sleep = 0
-        self.state = State.READY
+        # self.t_sleep = 0
+        self.state = State.WAITING
 
 
         self.layout = QHBoxLayout()
@@ -159,11 +159,11 @@ class Window(QDialog):
         self.setLayout(self.layout)
         self.setGeometry(0, 0, 2500, 1600)
 
-        self.make_sliders()
+        # self.make_sliders()
         self.update()
-        self.timer = pg.QtCore.QTimer()
-        self.timer.timeout.connect(self.update)
-        self.timer.start(1000)
+        # self.timer = pg.QtCore.QTimer()
+        # self.timer.timeout.connect(self.update)
+        # self.timer.start(1000)
 
         self.player_timer = pg.QtCore.QTimer()
         self.player_timer.timeout.connect(self.play)
@@ -190,17 +190,23 @@ class Window(QDialog):
                 print(message)
                 port.send(message)
             self.t = time.monotonic()
-            self.t_sleep = mido.tick2second(message.time, midi.ticks_per_beat, mido.bpm2tempo(BPM))
-            self.state = State.WAITING
-        elif self.state == State.WAITING:
-            if time.monotonic() < self.t + self.t_sleep:
-                return
             if self.message_i + 1 == len(track):
                 self.state = State.DONE
+            else:
+                self.message_i += 1
+                self.state = State.WAITING
+            # self.t_sleep = mido.tick2second(message.time, midi.ticks_per_beat, mido.bpm2tempo(BPM))
+            self.state = State.WAITING
+        elif self.state == State.WAITING:
+            # if time.monotonic() < self.t + self.t_sleep:
+            if time.monotonic() < self.t + mido.tick2second(message.time, midi.ticks_per_beat, mido.bpm2tempo(BPM)):
                 return
-            self.message_i += 1
+            # if self.message_i + 1 == len(track):
+            #     self.state = State.DONE
+            #     return
+            # self.message_i += 1
             self.state = State.READY
-            self.play()
+            # self.play()
         elif self.state == State.DONE:
             return
         else:
@@ -416,7 +422,7 @@ class Window(QDialog):
             print('update')
             self.X = pd.read_csv(self.data_file, index_col=0)
 
-        self.update_sliders()
+        # self.update_sliders()
         self.update_plot()
         # with open(self.data_file) as f:
         #     tiers = json.load(f)
