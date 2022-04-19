@@ -8,6 +8,7 @@ import pyqtgraph.opengl as gl
 from  PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout, QHBoxLayout, QSlider, QLabel
 from pyqtgraph.Qt import QtCore, QtGui
+from PyQt6.QtGui import QFont
 import pyqtgraph as pg
 import sys
 import pickle
@@ -84,8 +85,8 @@ class Window(QDialog):
         self.sliders = dict()
         self.labels = dict()
         self.ranges = {
-            'z': (0, 50),
-            'radius': (0, 50),
+            'z': (-5, 5),
+            'radius': (0, 5),
             'angle': (-np.pi, + np.pi),
         }
 
@@ -271,10 +272,10 @@ class Window(QDialog):
         self.w.addItem(self.main_scatter_plot)
 
 
-        self.main_scatter_plot.setData(pos=self.X[list('xyz')].values, size=0.05, color=self.color, pxMode=False)
+        self.main_scatter_plot.setData(pos=self.X[list('xyz')].values, size=0.01, color=self.color, pxMode=False)
 
         for row in self.X.itertuples():
-            t = gl.GLTextItem()
+            t = gl.GLTextItem(font=QFont('Helvetica', 18))
             t.setData(pos=(row.x, row.y, row.z), color=(127, 255, 127, 255), text=row.Index)
             self.w.addItem(t)
 
