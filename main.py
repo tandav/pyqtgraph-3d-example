@@ -43,7 +43,7 @@ if midi_device := os.environ.get('MIDI_DEVICE'):
 scale = Scale.from_name('C', 'major')
 GREEN_COLOR = 127, 255, 127, 255
 RED_COLOR = 255, 0, 0, 255
-BPM = 120
+BPM = 30
 
 midi = mido.MidiFile('/Users/tandav/Desktop/harmony.mid', type=1)
 # track = util.parse_notes_seconds(midi, bpm=120)
@@ -115,7 +115,8 @@ class Window(QDialog):
         self.data_file_mtime = None
         self.n_range = 1000
         self.chord_to_text = {}
-        self.playing_notes = {}
+        # self.playing_notes = {}
+        self.playing_notes = set()
 
         self.w = gl.GLViewWidget()
 
@@ -141,6 +142,8 @@ class Window(QDialog):
         # self.t_sleep = 0
         self.state = State.WAITING
 
+        self.noteset = None
+
 
         self.layout = QHBoxLayout()
         self.left_layout = QVBoxLayout()
@@ -151,7 +154,7 @@ class Window(QDialog):
         self.left_layout.addWidget(self.w)
         # self.right_layout.addWidget(self.sp)
         self.layout.addLayout(self.left_layout)
-        self.layout.addLayout(self.right_layout)
+        # self.layout.addLayout(self.right_layout)
 
         # layout = QVBoxLayout()
         # self.layout.addWidget(self.w)
@@ -181,12 +184,35 @@ class Window(QDialog):
             self.playing_notes[note] = {'t_start': t, 'duration': duration, 'chord': chord}
         self.chord_to_text[chord.abstract].setData(color=RED_COLOR)
 
+    def update_text(self):
+        new_noteset = SpecificNote.to_abstract(self.playing_notes)
+
+        if self.noteset is None:
+            self.chord_to_text[new_noteset].setData(color=RED_COLOR)
+            self.noteset = new_noteset
+            return
+
+        if new_noteset == self.noteset:
+            return
+
+        if t := self.chord_to_text.get(self.noteset):
+            t.setData(color=GREEN_COLOR)
+        if t := self.chord_to_text.get(new_noteset):
+            t.setData(color=RED_COLOR)
+        self.noteset = new_noteset
+
+
     def play(self):
         message = track[self.message_i]
         if self.state == State.READY:
             # m = mido.Message(type=message.type, )
             # port.send(m)
             if message.type in {'note_on', 'note_off'}:
+                if message.type == 'note_on':
+                    self.playing_notes.add(SpecificNote.from_absolute_i(message.note))
+                elif message.type == 'note_off':
+                    self.playing_notes.remove(SpecificNote.from_absolute_i(message.note))
+                self.update_text()
                 print(message)
                 port.send(message)
             self.t = time.monotonic()
@@ -401,7 +427,7 @@ class Window(QDialog):
         for row in self.X.itertuples():
             t = gl.GLTextItem(font=QFont('Helvetica', 18))
             t.setData(pos=(row.x, row.y, row.z), color=GREEN_COLOR, text=row.Index)
-            self.chord_to_text[NoteSet.from_str(row.Index)] = t
+            self.chord_to_text[NoteSet.from_str(row.Index).notes] = t
             self.w.addItem(t)
 
         for k, v in graph.items():
