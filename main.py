@@ -24,6 +24,8 @@ from musictool.scale import Scale
 from musictool.note import SpecificNote
 from musictool.midi import player
 import mido
+
+import config
 import util
 import os
 import enum
@@ -259,7 +261,20 @@ class Window(QDialog):
         #     self.chord_to_text[chord.abstract].setData(color=GREEN_COLOR)
 
 
-
+    def add_axes_labels(self):
+        self.axes_labels = []
+        for ax in range(3):
+            for note in config.noterange:
+                pos = [0, 0, 0]
+                pos[ax] = note.absolute_i
+                t = gl.GLTextItem(
+                    pos=pos,
+                    color=GREEN_COLOR,
+                    text=str(note),
+                    font=QFont('SF Mono', 18),
+                )
+                # t.setData(pos=(row.x, row.y, row.z), color=GREEN_COLOR, text=str(note))
+                self.w.addItem(t)
 
     def make_axes_grids(self, grid_shift = 50, grid_spacing = 1):
         gx = gl.GLGridItem(color=(255, 255, 255, 0.1))
@@ -416,6 +431,7 @@ class Window(QDialog):
         # self.w.opts['distance'] = 150
         self.w.clear()
         self.make_axes_grids()
+        self.add_axes_labels()
 
         self.main_scatter_plot = gl.GLScatterPlotItem()
         self.color = (1, 0.7, 0.4, 1)
