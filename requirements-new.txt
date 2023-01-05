@@ -1,0 +1,7 @@
+pyqtgraph
+PyQt6
+PyOpenGL
+pandas
+scikit-learn
+numpy
+musiclib==1.9.3

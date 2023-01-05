@@ -1,5 +1,5 @@
-from musictool.noteset import NoteRange
-from musictool.scale import Scale
+from musiclib.noterange import NoteRange
+from musiclib.scale import Scale
 
 
 scale = Scale.from_name('C', 'major')
