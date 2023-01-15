@@ -57,7 +57,7 @@ class Window(QDialog):
         self.setGeometry(0, 0, 1200, 800)
 
 
-app = QtGui.QApplication(sys.argv)
+app = QApplication(sys.argv)
 gui = Window()
 gui.show()
 app.exec()
