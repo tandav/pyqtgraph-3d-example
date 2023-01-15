@@ -305,7 +305,7 @@ class Window(QDialog):
 
 
 
-app = QtGui.QApplication(sys.argv)
+app = QApplication(sys.argv)
 gui = Window()
 gui.show()
 app.exec()
