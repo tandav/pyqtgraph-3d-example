@@ -1,18 +1,26 @@
 import numpy as np
-import pandas as pd
 import pyqtgraph.opengl as gl
-from PyQt6.QtWidgets import QDialog, QApplication, QPushButton, QVBoxLayout
-from pyqtgraph.Qt import QtCore, QtGui
+from PyQt6.QtWidgets import QDialog, QApplication, QVBoxLayout
 import pyqtgraph as pg
 import sys
 
 
+def random_sphere(r: float = 1, n_points: int = 100_000) -> np.ndarray:
+    """Generate random points on a sphere surface"""
+    theta = np.random.uniform(0, 2 * np.pi, n_points)
+    phi = np.random.uniform(0, 2 * np.pi, n_points)
+    x = r * np.sin(phi) * np.cos(theta)
+    y = r * np.sin(phi) * np.sin(theta)
+    z = r * np.cos(phi)
+    return np.c_[x, y, z]
+
+
 class Window(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self):
         super().__init__()
 
         # pg.setConfigOption('background', 'w')
-        # pg.setConfigOption('foreground', 'k')
+        pg.setConfigOption('foreground', 'k')
         
         self.setWindowTitle('Earth Cities')
 
@@ -43,12 +51,9 @@ class Window(QDialog):
         self.main_scatter_plot = gl.GLScatterPlotItem()
         self.color = (1, 0.7, 0.4, 1)
 
-        x = np.load('X.npy')
-        # x = np.random.random((1000, 3))
+        # x = np.load('X.npy')
+        x = random_sphere(r=1)
         x = x * 10
-        print(x.shape)
-        # ind = np.random.choice(x.shape[0], size=40_000, replace=False)
-        # x = x[ind]
         self.main_scatter_plot.setData(pos=x, size=0.01, color=self.color, pxMode=False)
         self.w.addItem(self.main_scatter_plot)
         layout = QVBoxLayout()

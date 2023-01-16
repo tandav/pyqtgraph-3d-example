@@ -6,4 +6,4 @@ run: X.npy
 	$(python) main.py
 
 X.npy:
-	$(python) load_data.py
+	$(python) _archive/load_data.py
