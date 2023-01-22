@@ -1,8 +1,9 @@
-import numpy as np
-import pyqtgraph.opengl as gl
-from PyQt6.QtWidgets import QDialog, QApplication, QVBoxLayout
-import pyqtgraph as pg
 import sys
+
+import numpy as np
+import pyqtgraph as pg
+import pyqtgraph.opengl as gl
+from PyQt6.QtWidgets import QApplication, QDialog, QVBoxLayout
 
 
 def random_sphere(r: float = 1, n_points: int = 100_000) -> np.ndarray:
@@ -15,14 +16,24 @@ def random_sphere(r: float = 1, n_points: int = 100_000) -> np.ndarray:
     return np.c_[x, y, z]
 
 
+def torus(R: float = 3, r: float = 1, n_points: int = 100_000) -> np.ndarray:
+    """Generate points on a torus surface"""
+    theta = np.random.uniform(0, 2 * np.pi, n_points)
+    phi = np.random.uniform(0, 2 * np.pi, n_points)
+    x = (R + r * np.cos(theta)) * np.cos(phi)
+    y = (R + r * np.cos(theta)) * np.sin(phi)
+    z = r * np.sin(theta)
+    return np.c_[x, y, z]
+
+
 class Window(QDialog):
     def __init__(self):
         super().__init__()
 
         # pg.setConfigOption('background', 'w')
         pg.setConfigOption('foreground', 'k')
-        
-        self.setWindowTitle('Earth Cities')
+
+        self.setWindowTitle('3D Plot')
 
         self.w = gl.GLViewWidget()
         # self.w.opts['distance'] = 100
@@ -51,10 +62,12 @@ class Window(QDialog):
         self.main_scatter_plot = gl.GLScatterPlotItem()
         self.color = (1, 0.7, 0.4, 1)
 
-        # x = np.load('X.npy')
-        x = random_sphere(r=1)
-        x = x * 10
-        self.main_scatter_plot.setData(pos=x, size=0.01, color=self.color, pxMode=False)
+        # x = random_sphere(r=10)
+        x = torus(3, 1)
+
+        self.main_scatter_plot.setData(
+            pos=x, size=0.01, color=self.color, pxMode=False,
+        )
         self.w.addItem(self.main_scatter_plot)
         layout = QVBoxLayout()
         layout.addWidget(self.w)
@@ -62,7 +75,8 @@ class Window(QDialog):
         self.setGeometry(0, 0, 1200, 800)
 
 
-app = QApplication(sys.argv)
-gui = Window()
-gui.show()
-app.exec()
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    gui = Window()
+    gui.show()
+    app.exec()
