@@ -1,4 +1,5 @@
 import os
+import signal
 import sys
 
 import numpy as np
@@ -89,6 +90,7 @@ class Window(QDialog):
 
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, signal.SIG_DFL)  # allow Ctrl+C to exit
     app = QApplication(sys.argv)
     gui = Window()
     gui.show()
