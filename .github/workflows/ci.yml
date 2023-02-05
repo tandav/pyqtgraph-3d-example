@@ -47,8 +47,8 @@ jobs:
       - name: test
         env:
           TEST: true
-          QT_QPA_PLATFORM: offscreen
-          DISPLAY: ':99.0'
+          # QT_QPA_PLATFORM: offscreen
+          # DISPLAY: ':99.0'
         # run: python main.py
         # run: xvfb-run python main.py
         run: pytest
