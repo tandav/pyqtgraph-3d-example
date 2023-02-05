@@ -13,6 +13,7 @@ jobs:
         with:
           python-version: '3.11'
 
+      # https://pytest-qt.readthedocs.io/en/latest/troubleshooting.html#github-actions
       - name: Install EGL mesa
         run: |
           # sudo apt-get update -y -qq
@@ -36,8 +37,9 @@ jobs:
         env:
           TEST: true
           QT_QPA_PLATFORM: offscreen
-        run: python main.py
-        # run: xvfb-run python main.py
+          DISPLAY: ':99.0'
+        # run: python main.py
+        run: xvfb-run python main.py
 
       - name: pre-commit
         run: pre-commit run --all-files
