@@ -44,7 +44,8 @@ jobs:
           QT_QPA_PLATFORM: offscreen
           DISPLAY: ':99.0'
         # run: python main.py
-        run: xvfb-run python main.py
+        # run: xvfb-run python main.py
+        run: pytest
 
       - name: pre-commit
         run: pre-commit run --all-files
