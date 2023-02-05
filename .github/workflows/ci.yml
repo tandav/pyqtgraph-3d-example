@@ -31,8 +31,6 @@ jobs:
           python3 -m pip install -r requirements-dev.txt
 
       - name: test
-        env:
-          TEST: true
         run: pytest
 
       - name: pre-commit
