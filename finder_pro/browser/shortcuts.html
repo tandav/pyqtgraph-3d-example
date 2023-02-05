@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>shortcuts</title>
+</head>
+<body align="center">
+<h1>shortcuts</h1>
+<img src="shortcuts.png" usemap="#image_map">
+<map name="image_map">
+
+<area shape="rect" coords="32,96,81,145" href="https://workflowy.com" title="https://workflowy.com"/>
+<area shape="rect" coords="319,220,465,251" href="https://news.ycombinator.com" title="https://news.ycombinator.com"/>
+<area shape="rect" coords="430,333,531,363" href="http://tmfeed.ru" title="http://tmfeed.ru"/>
+<area shape="rect" coords="430,297,490,327" href="https://vc.ru" title="https://vc.ru"/>
+<area shape="rect" coords="430,260,548,292" href="https://tjournal.ru" title="https://tjournal.ru"/>
+<area shape="rect" coords="523,217,613,238" href="https://tweetdeck.twitter.com" title="https://tweetdeck.twitter.com"/>
+<area shape="rect" coords="476,215,521,251" href="https://twitter.com" title="https://twitter.com"/>
+<area shape="rect" coords="319,260,402,357" href="https://www.youtube.com" title="https://www.youtube.com"/>
+<area shape="rect" coords="973,393,1121,477" href="https://tandav.github.io" title="https://tandav.github.io"/>
+<area shape="rect" coords="897,401,949,452" href="https://github.com" title="https://github.com"/>
+<area shape="rect" coords="167,29,260,65" href="file:///Users/tandav/GoogleDrive/Notes/etc/map/bic-pic.html" title="file:///Users/tandav/GoogleDrive/Notes/etc/map/bic-pic.html"/>
+<area shape="rect" coords="286,536,357,623" href="file:///Users/tandav/Desktop" title="file:///Users/tandav/Desktop"/>
+<area shape="rect" coords="203,537,283,621" href="file:///Users/tandav/GoogleDrive" title="file:///Users/tandav/GoogleDrive"/>
+<area shape="rect" coords="128,537,200,620" href="file:///Users/tandav/Documents" title="file:///Users/tandav/Documents"/>
+<area shape="rect" coords="57,537,124,620" href="file:///Users/tandav/Downloads" title="file:///Users/tandav/Downloads"/>
+<area shape="rect" coords="1033,10,1130,69" href="https://github.com/tandav/Notes" title="https://github.com/tandav/Notes"/>
+<area shape="rect" coords="949,11,1026,96" href="file:///Users/tandav/GoogleDrive/Notes" title="file:///Users/tandav/GoogleDrive/Notes"/>
+<area shape="rect" coords="964,253,1129,293" href="file:///Users/tandav/GoogleDrive/Notes/etc/map/study-plan.html" title="file:///Users/tandav/GoogleDrive/Notes/etc/map/study-plan.html"/>
+<area shape="rect" coords="351,398,548,440" href="file:///Users/tandav/GoogleDrive/Notes/etc/map/surfing.html" title="file:///Users/tandav/GoogleDrive/Notes/etc/map/surfing.html"/>
+<area shape="rect" coords="550,375,579,403" href="https://soundcloud.com" title="https://soundcloud.com"/>
+<area shape="rect" coords="12,21,101,66" href="file:///Users/tandav/GoogleDrive/Notes/etc/map/todo.html" title="file:///Users/tandav/GoogleDrive/Notes/etc/map/todo.html"/>
+<area shape="rect" coords="430,367,522,395" href="https://www.reddit.com" title="https://www.reddit.com"/>
+<area shape="rect" coords="363,363,420,385" href="https://www.youtube.com/feed/subscriptions" title="https://www.youtube.com/feed/subscriptions"/>
+<area shape="rect" coords="308,363,350,387" href="https://www.youtube.com/feed/trending" title="https://www.youtube.com/feed/trending"/>
+
+</map>
+
+<br/>
+<kbd>C</kbd> copy <kbd>S</kbd> select <kbd>&#8984E</kbd> eval
+<br/>
+<textarea class="js-copytextarea" rows="1" cols="100">open -b com.adobe.Photoshop ~/GoogleDrive/Notes/etc/map/shortcuts.psd</textarea>
+
+<script> 
+document.addEventListener("keydown", function(event) { 
+    console.log(event.keyCode) 
+    
+    if (event.keyCode === 67) {
+        var copyTextarea = document.querySelector(".js-copytextarea")
+        copyTextarea.focus()
+        copyTextarea.select()
+        document.execCommand("copy")
+        window.getSelection().removeAllRanges()
+    }
+    
+    else if (event.keyCode === 83) {
+        var copyTextarea = document.querySelector(".js-copytextarea")
+        copyTextarea.focus()
+        copyTextarea.select()
+        event.preventDefault()
+    }
+})
+</script>
+
+<style>
+body {
+    background-color: linen;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+textarea {
+    background-color: #292E3D;
+    color: white;
+    font-family: monospace;
+}
+
+kbd {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    padding: 0px 3px 0px 3px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+}
+</style>
+
+</body>
+</html>
