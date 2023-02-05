@@ -13,20 +13,29 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: install dependencies
+      - name: Install EGL mesa
         run: |
-          sudo apt-get update
-          # sudo apt-get install -y libgl1-mesa-glx
-          sudo apt-get install -y '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
-          sudo apt-get install xvfb
-          python3 -m pip install -r requirements.txt
+          sudo apt-get update -y -qq
+          sudo apt-get install -y -qq libegl1-mesa libegl1-mesa-dev        
+      - name: Check if EGL library exists
+        run: ldconfig -p | grep EGL
+
+      # - name: install dependencies
+      #   run: |
+      #     sudo apt-get update
+      #     # sudo apt-get install -y libgl1-mesa-glx
+      #     sudo apt-get install -y '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
+      #     sudo apt-get install xvfb
+      
+      - name: install python dependencies
+        run: python3 -m pip install -r requirements.txt
 
       - name: test
         env:
           TEST: true
           QT_QPA_PLATFORM: offscreen
-        # run: python main.py
-        run: xvfb-run python main.py
+        run: python main.py
+        # run: xvfb-run python main.py
 
       - name: pre-commit
         run: pre-commit run --all-files
