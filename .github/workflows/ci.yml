@@ -1,0 +1,25 @@
+name: ci
+
+on: [push, pull_request]
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: install dependencies
+        run: python3 -m pip install -r requirements.txt
+
+      - name: test
+        env:
+          TEST: true
+        run: python main.py
+
+      - name: pre-commit
+        run: pre-commit run --all-files

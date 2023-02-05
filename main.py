@@ -1,8 +1,10 @@
+import os
 import sys
 
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
+from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import QApplication, QDialog, QVBoxLayout
 
 
@@ -73,6 +75,17 @@ class Window(QDialog):
         layout.addWidget(self.w)
         self.setLayout(layout)
         self.setGeometry(0, 0, 1200, 800)
+
+        if 'TEST' in os.environ:
+            self.counter = 0
+            self.timer = QTimer()
+            self.timer.timeout.connect(self.update)
+            self.timer.start(1000)
+
+    def update(self, exit_after: int = 3):
+        if self.counter == exit_after:
+            raise SystemExit
+        self.counter += 1
 
 
 if __name__ == '__main__':
