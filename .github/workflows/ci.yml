@@ -10,16 +10,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
+
+      # https://pytest-qt.readthedocs.io/en/latest/troubleshooting.html#github-actions
+      - uses: tlambert03/setup-qt-libs@v1
         with:
           python-version: '3.11'
 
-      # https://pytest-qt.readthedocs.io/en/latest/troubleshooting.html#github-actions
-      - name: Install EGL mesa
-        run: |
-          # sudo apt-get update -y -qq
-          # sudo apt-get install -y -qq libegl1-mesa libegl1-mesa-dev    
-          sudo apt-get update -y
-          sudo apt-get install -y libgles2-mesa-dev    
+      # - name: Install EGL mesa
+      #   run: |
+      #     # sudo apt-get update -y -qq
+      #     # sudo apt-get install -y -qq libegl1-mesa libegl1-mesa-dev    
+      #     sudo apt-get update -y
+      #     sudo apt-get install -y libgles2-mesa-dev    
       # - name: Check if EGL library exists
         # run: ldconfig -p | grep EGL
 
