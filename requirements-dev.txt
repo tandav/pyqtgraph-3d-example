@@ -1,2 +1,3 @@
 pytest
 pytest-xvfb
+pre-commit
