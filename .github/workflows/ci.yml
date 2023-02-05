@@ -10,11 +10,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
-
-      # https://pytest-qt.readthedocs.io/en/latest/troubleshooting.html#github-actions
-      - uses: tlambert03/setup-qt-libs@v1
         with:
           python-version: '3.11'
+      
+      # https://pytest-qt.readthedocs.io/en/latest/troubleshooting.html#github-actions
+      - uses: tlambert03/setup-qt-libs@v1
+
 
       # - name: Install EGL mesa
       #   run: |
