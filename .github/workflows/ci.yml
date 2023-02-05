@@ -1,0 +1,37 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # https://pytest-qt.readthedocs.io/en/latest/troubleshooting.html#github-actions
+      - uses: tlambert03/setup-qt-libs@v1
+
+      - name: Install xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+
+      - name: install python dependencies
+        run: |
+          python3 -m pip install -r requirements.txt
+          python3 -m pip install -r requirements-dev.txt
+
+      - name: test
+        run: pytest
+
+      - name: pre-commit
+        run: pre-commit run --all-files
