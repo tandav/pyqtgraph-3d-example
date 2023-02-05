@@ -23,6 +23,7 @@ jobs:
       - name: test
         env:
           TEST: true
+          QT_QPA_PLATFORM: offscreen
         run: python main.py
 
       - name: pre-commit
