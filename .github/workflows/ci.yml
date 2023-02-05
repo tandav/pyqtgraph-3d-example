@@ -34,7 +34,9 @@ jobs:
       #     sudo apt-get install xvfb
       
       - name: install python dependencies
-        run: python3 -m pip install -r requirements.txt
+        run: |
+          python3 -m pip install -r requirements.txt
+          python3 -m pip install -r requirements-dev.txt
 
       - name: test
         env:
