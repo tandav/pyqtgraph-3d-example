@@ -14,28 +14,12 @@ jobs:
           python-version: '3.11'
       
       # https://pytest-qt.readthedocs.io/en/latest/troubleshooting.html#github-actions
-      - uses: tlambert03/setup-qt-libs@v1
+      # - uses: tlambert03/setup-qt-libs@v1
 
       - name: Install xvfb
         run: |
           sudo apt-get update
           sudo apt-get install -y xvfb herbstluftwm
-
-      # - name: Install EGL mesa
-      #   run: |
-      #     # sudo apt-get update -y -qq
-      #     # sudo apt-get install -y -qq libegl1-mesa libegl1-mesa-dev    
-      #     sudo apt-get update -y
-      #     sudo apt-get install -y libgles2-mesa-dev    
-      # - name: Check if EGL library exists
-        # run: ldconfig -p | grep EGL
-
-      # - name: install dependencies
-      #   run: |
-      #     sudo apt-get update
-      #     # sudo apt-get install -y libgl1-mesa-glx
-      #     sudo apt-get install -y '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
-      #     sudo apt-get install xvfb
       
       - name: install python dependencies
         run: |
@@ -45,10 +29,6 @@ jobs:
       - name: test
         env:
           TEST: true
-          # QT_QPA_PLATFORM: offscreen
-          # DISPLAY: ':99.0'
-        # run: python main.py
-        # run: xvfb-run python main.py
         run: pytest
 
       - name: pre-commit
